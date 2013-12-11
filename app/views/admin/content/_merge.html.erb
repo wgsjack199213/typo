@@ -1,5 +1,5 @@
 <!--saisai-->
-<% if @status_edit %>
+<% if @can_merge %>
     <h4><%= _("Merge Articles") %></h4>
     <div class=''>
       <%= form_tag url_for(:controller => 'content', :action => 'merge_articles', :article_id => @article.id), :method => "update" do%>

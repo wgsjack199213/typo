@@ -167,8 +167,8 @@ class Admin::ContentController < Admin::BaseController
 
   def new_or_edit
     #debugger
-    if @article
-      @status_edit = true
+    if @article and current_user.admin?
+      @can_merge = true
     end
 
     id = params[:id]
@@ -212,6 +212,7 @@ class Admin::ContentController < Admin::BaseController
     @resources = Resource.without_images_by_filename
     @macros = TextFilter.macro_filters
     render 'new'
+
   end
 
   def set_the_flash
