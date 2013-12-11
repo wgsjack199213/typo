@@ -37,6 +37,19 @@ class Article < Content
 
   end
 
+  def merge_with(object_article)
+    object_article.comments.each do |comment|
+      comment.article_id = self.id
+      comment.save
+    end
+
+    self.body = self.body + "\n" + object_article.body
+    self.save
+
+    object_article.reload
+    object_article.destroy
+  end
+
   with_options(:conditions => { :published => true }, :order => 'created_at DESC') do |this|
     this.has_many :published_comments,   :class_name => "Comment", :order => "created_at ASC"
     this.has_many :published_trackbacks, :class_name => "Trackback", :order => "created_at ASC"
