@@ -1,11 +1,36 @@
-require 'base64'
 require 'ruby-debug'
+require 'base64'
+
 
 module Admin; end
 class Admin::ContentController < Admin::BaseController
   layout "administration", :except => [:show, :autosave]
 
   cache_sweeper :blog_sweeper
+
+  def merge_articles
+    #puts params
+    current_id = params[:article_id]
+    merge_id = params[:merge_with]
+    @merge_article = Article.find_by_id(merge_id)
+
+    if not @merge_article
+      flash[:error] = _("Error, the article with which you want to merge does not exist")
+    elsif current_id == merge_id
+      flash[:error] = _("Error, the article with which you want to merge should not be identical to the current article")
+    else
+      @article = Article.find(current_id)
+      @article.merge_with @merge_article
+    end
+
+    redirect_to :action => 'index'
+
+    # begin to merge
+
+
+
+    #redirect_to :action => 'index'
+  end
 
   def auto_complete_for_article_keywords
     @items = Tag.find_with_char params[:article][:keywords].strip
@@ -247,8 +272,5 @@ class Admin::ContentController < Admin::BaseController
     @resources = Resource.by_created_at
   end
 
-  def merge_articles
-    #redirect_to home :action => 'new'
 
-  end
 end
